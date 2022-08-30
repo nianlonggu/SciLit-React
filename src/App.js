@@ -100,7 +100,7 @@ export default function App() {
   const [paperInfoList, setPaperInfoList] = useState([]);
   const nlp_server_address = process.env.REACT_APP_NLP_SERVER_ADDRESS;
   const [paper_offset, set_paper_offset] = useState(0);
-  const num_papers_per_page  = 5;
+  const num_papers_per_page  = 2;
   const nResults = 100;
   const [log_search_progress, set_log_search_progress] = useState("");
   const [export_citation_progress, set_export_citation_progress] = useState("");
