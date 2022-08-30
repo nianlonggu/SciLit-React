@@ -11,16 +11,24 @@ import FormatQuote from '@mui/icons-material/FormatQuote';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import logo from './app-logo-white.png';
-import { IconButton, TextField, Button, CircularProgress, Card, 
-         CardHeader, CardContent, CardActions, Collapse
-        } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Collapse from '@mui/material/Collapse';
+
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import SearchIcon from '@mui/icons-material/Search';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { red} from '@mui/material/colors';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import red from '@mui/material/colors/red';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
+import createTheme from '@mui/material/styles/createTheme';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import UnfoldLessDoubleIcon from '@mui/icons-material/UnfoldLessDouble';
 import Dialog from '@mui/material/Dialog';
@@ -84,20 +92,19 @@ export default function App() {
   const [windowSize, setWindowSize] = useState( getWindowSize());
   const [sidebarStatus, setSidebarStatus] = useState(1);
   const [sidebarDisplay, setSidebarDisplay] = useState(null);
-  const maxDrawerWidth = 424;
+  const maxDrawerWidth = 435;
   const [drawerWidth, setDrawerWidth] = useState(maxDrawerWidth);
   // const [context, setContext] = useState("");
   // const [keywords, setKeywords] = useState("");
   // const [citationText, setCitationText] = useState("");
   const [paperInfoList, setPaperInfoList] = useState([]);
-  const [paginated_paper_info_list, set_paginated_paper_info_list ] = useState([]);
-  const [nlp_server_address, set_nlp_server_address] = useState(process.env.REACT_APP_NLP_SERVER_ADDRESS);
+  const nlp_server_address = process.env.REACT_APP_NLP_SERVER_ADDRESS;
   const [paper_offset, set_paper_offset] = useState(0);
-  const [num_papers_per_page, set_num_papers_per_page] = useState(5);
-  const [nResults, set_nResults] = useState(100);
+  const num_papers_per_page  = 5;
+  const nResults = 100;
   const [log_search_progress, set_log_search_progress] = useState("");
   const [export_citation_progress, set_export_citation_progress] = useState("");
-  const [all_element_keys, set_all_element_keys] = useState([]);
+  // const [all_element_keys, set_all_element_keys] = useState([]);
 
   const [selected_cited_paper_info, set_selected_cited_paper_info] = useState(null);
   const [open_export_citation, set_open_export_citation] = useState(false);
@@ -108,7 +115,7 @@ export default function App() {
   const [toast_copied_open, set_toast_copied_open] = useState(false);
 
 
-  const [debug_info, set_debug_info] = useState("");
+  // const [debug_info, set_debug_info] = useState("");
 
   const itemsRef = useRef({});
 
@@ -287,79 +294,79 @@ export default function App() {
   }
 
 
-  function get_all_element_keys(paperInfoList,paper_offset,num_papers_per_page){
-     const filtered_paper_info_list =  paperInfoList.map( (item, idx)=>{ return {item:item, idx:idx} } ).filter( 
-          (item, idx)=>{
-              return (idx >=paper_offset && idx< paper_offset+num_papers_per_page && idx < paperInfoList.length);
-          });
-     let key_list = [];
+  // function get_all_element_keys(paperInfoList,paper_offset,num_papers_per_page){
+  //    const filtered_paper_info_list =  paperInfoList.map( (item, idx)=>{ return {item:item, idx:idx} } ).filter( 
+  //         (item, idx)=>{
+  //             return (idx >=paper_offset && idx< paper_offset+num_papers_per_page && idx < paperInfoList.length);
+  //         });
+  //    let key_list = [];
 
-     for (let paper_i=0; paper_i<filtered_paper_info_list.length; paper_i++){
-        const paper_idx = filtered_paper_info_list[paper_i].idx;
-        const paper_info = filtered_paper_info_list[paper_i].item;
-        // extracted sentences
-        const highlights_info = paper_info.highlights_info;
-        for (let highlight_i = 0; highlight_i<highlights_info.length; highlight_i ++){
-            key_list.push( 
-                JSON.stringify( { "paper_idx":paper_idx.toString(),  
-                                  "field_name":"highlights",
-                                  "sentence_id":highlight_i.toString(),
-                                } )
-             );
-        } 
+  //    for (let paper_i=0; paper_i<filtered_paper_info_list.length; paper_i++){
+  //       const paper_idx = filtered_paper_info_list[paper_i].idx;
+  //       const paper_info = filtered_paper_info_list[paper_i].item;
+  //       // extracted sentences
+  //       const highlights_info = paper_info.highlights_info;
+  //       for (let highlight_i = 0; highlight_i<highlights_info.length; highlight_i ++){
+  //           key_list.push( 
+  //               JSON.stringify( { "paper_idx":paper_idx.toString(),  
+  //                                 "field_name":"highlights",
+  //                                 "sentence_id":highlight_i.toString(),
+  //                               } )
+  //            );
+  //       } 
 
-        // abstract and fullbody
-        const field_names = [ "abstract", "fullbody" ];
-        for ( let field_i = 0; field_i< field_names.length;field_i++ ){
-          const field_name = field_names[field_i];
-          const sections = (field_name==="abstract")?(paper_info.content_info.Content??{}).Abstract_Parsed??[] :
-                                                    (paper_info.content_info.Content??{}).Fullbody_Parsed??[] ;
+  //       // abstract and fullbody
+  //       const field_names = [ "abstract", "fullbody" ];
+  //       for ( let field_i = 0; field_i< field_names.length;field_i++ ){
+  //         const field_name = field_names[field_i];
+  //         const sections = (field_name==="abstract")?(paper_info.content_info.Content??{}).Abstract_Parsed??[] :
+  //                                                   (paper_info.content_info.Content??{}).Fullbody_Parsed??[] ;
 
-          for (let sec_i = 0; sec_i<sections.length; sec_i ++){
-            const section = sections[sec_i];
-            const section_id = section.section_id;
-            const section_text = section.section_text;
-            for ( let para_i = 0; para_i<section_text.length; para_i++){
-                const paragraph = section_text[para_i];
-                const paragraph_id = paragraph.paragraph_id;
-                const paragraph_text = paragraph.paragraph_text;
-                for ( let sen_i = 0; sen_i<paragraph_text.length; sen_i ++){
-                    const sentence = paragraph_text[sen_i];
-                    const sentence_id = sentence.sentence_id;
-                    key_list.push( 
-                          JSON.stringify(
-                              {
-                                  "paper_idx":paper_idx.toString(), 
-                                  "field_name":field_name.toString(),
-                                  "section_id":section_id.toString(),
-                                  "paragraph_id":paragraph_id.toString(),
-                                  "sentence_id":sentence_id.toString()
-                              })
-                          );
-                }
+  //         for (let sec_i = 0; sec_i<sections.length; sec_i ++){
+  //           const section = sections[sec_i];
+  //           const section_id = section.section_id;
+  //           const section_text = section.section_text;
+  //           for ( let para_i = 0; para_i<section_text.length; para_i++){
+  //               const paragraph = section_text[para_i];
+  //               const paragraph_id = paragraph.paragraph_id;
+  //               const paragraph_text = paragraph.paragraph_text;
+  //               for ( let sen_i = 0; sen_i<paragraph_text.length; sen_i ++){
+  //                   const sentence = paragraph_text[sen_i];
+  //                   const sentence_id = sentence.sentence_id;
+  //                   key_list.push( 
+  //                         JSON.stringify(
+  //                             {
+  //                                 "paper_idx":paper_idx.toString(), 
+  //                                 "field_name":field_name.toString(),
+  //                                 "section_id":section_id.toString(),
+  //                                 "paragraph_id":paragraph_id.toString(),
+  //                                 "sentence_id":sentence_id.toString()
+  //                             })
+  //                         );
+  //               }
 
-            }
-          } 
+  //           }
+  //         } 
 
-        }
+  //       }
 
-        //Reference
-        const references = paper_info.content_info.Reference??[];
-        for (let ref_i = 0; ref_i < references.length; ref_i++ ){
-            key_list.push( 
-                          JSON.stringify(
-                              {
-                                  "paper_idx":paper_idx.toString(), 
-                                  "field_name":"references",
-                                  "reference_id":ref_i.toString()
-                              })
-                          );
-        }
+  //       //Reference
+  //       const references = paper_info.content_info.Reference??[];
+  //       for (let ref_i = 0; ref_i < references.length; ref_i++ ){
+  //           key_list.push( 
+  //                         JSON.stringify(
+  //                             {
+  //                                 "paper_idx":paper_idx.toString(), 
+  //                                 "field_name":"references",
+  //                                 "reference_id":ref_i.toString()
+  //                             })
+  //                         );
+  //       }
 
-     }
+  //    }
 
-     return key_list;
-  }
+  //    return key_list;
+  // }
 
 
 
@@ -492,7 +499,6 @@ export default function App() {
         set_paper_offset( new_paper_offset );
         setPaperInfoList( [] );
 
-        set_paginated_paper_info_list([]);
 
     }else{
         set_log_search_progress("searching for documents ...")
@@ -519,7 +525,6 @@ export default function App() {
         set_paper_offset( new_paper_offset );
         setPaperInfoList( paper_info_list );
 
-        set_paginated_paper_info_list( paper_info_list_slice );
     }
 
 
@@ -1550,11 +1555,9 @@ export default function App() {
 
                                       set_paper_offset( new_paper_offset );
                                       setPaperInfoList( paper_info_list );
-                                      set_paginated_paper_info_list( paper_info_list_slice );
 
                                   }else{
                                       set_paper_offset( new_paper_offset );
-                                      set_paginated_paper_info_list( paperInfoList.slice( new_paper_offset, new_paper_offset+num_papers_per_page ) );
                                   }
 
                               }
