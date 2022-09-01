@@ -20,7 +20,6 @@ import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -41,11 +40,8 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Tooltip from '@mui/material/Tooltip';
 import Snackbar from '@mui/material/Snackbar';
 import Pagination from '@mui/material/Pagination';
-import InputBase from '@mui/material/InputBase';
-import Paper from '@mui/material/Paper';
 import {title_generic_search, text_processing,
-        export_citation,
-        extract_highlights_from_papers, generate_citations_for_papers,
+        export_citation, generate_citations_for_papers,
         callback_paginating_papers, callback_search_pipeline
         } from "./modules/utils";
 
@@ -125,9 +121,6 @@ export default function App() {
 
   const [toast_copied_open, set_toast_copied_open] = useState(false);
   const [toast_paper_not_found_open, set_toast_paper_not_found_open] = useState(false);
-
-  const [buffered_paper_info_list, set_buffered_paper_info_list] = useState(null);
-  const [buffered_paper_offset, set_buffered_paper_offset] = useState(null);
 
 
   // const [debug_info, set_debug_info] = useState("");
@@ -217,6 +210,7 @@ export default function App() {
   }
 
 
+
   function render_sentence( paper_idx, text, spans, variant, display, text_color, highlight_color ){
       const text_spans = [];
       for ( let i = 0; i<spans.length; i ++ ){
@@ -291,6 +285,9 @@ export default function App() {
   }
 
 
+
+
+
   function write_sentence(  paper_idx, field_name, section_id, paragraph_id, sentence_id, 
                             sentence_text, spans, 
                             text_color, highlight_color ){
@@ -313,6 +310,7 @@ export default function App() {
               </Box>);
 
   }
+
 
   function write_paragraph( paper_idx, field_name, section_id, paragraph_id, paragraph_text, text_color, highlight_color  ){
       
@@ -365,6 +363,7 @@ export default function App() {
       )
   }
 
+
   function write_reference( paper_idx, references, text_color ){
       const field_name = "references";
       return ( 
@@ -399,18 +398,10 @@ export default function App() {
                   <IconButton
                     
                     onClick = { async ()=>{
-                            let search_res = null;
-                            try{
-                              set_log_search_progress("searching for documents ...")
-                              const search_res_list = await title_generic_search( [ item.Title??"" ], nlp_server_address );
-                              search_res = search_res_list[0];
-                            }catch{
-                              search_res = {"found":false};
-                              set_log_search_progress("");
-                            }
+                        const search_res_list = await title_generic_search( [ item.Title??"" ], nlp_server_address );
+                        const search_res = search_res_list[0];
 
                             if (!search_res.found){
-                                set_log_search_progress("");
                                 set_toast_paper_not_found_open(true);
                             }else{
                                 const context = input_context_ref.current.value;
@@ -423,16 +414,11 @@ export default function App() {
                                 }
                                 const paper_info_list = await callback_paginating_papers( [paper_id], context, keywords, set_log_search_progress, nlp_server_address );
                                 
-                                set_buffered_paper_offset(paper_offset);
-                                set_buffered_paper_info_list(JSON.parse(JSON.stringify(paperInfoList)));
-
-
                                 set_paper_offset( 0 );
                                 setPaperInfoList( paper_info_list )
 
                                 // console.log(  search_res );
-                                input_gen_cit_ref.current.value = "";
-                                set_selected_cited_paper_info(null);
+
                             }
 
                           } 
@@ -457,6 +443,7 @@ export default function App() {
         </Box>
       )
   }
+
 
   function display_paper_summary( paper_info, paper_idx, keywords = "", max_num_words_in_highlights = 35 ){
       const content_info = paper_info.content_info;
@@ -703,7 +690,6 @@ export default function App() {
   <ThemeProvider theme={theme}>
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
             style={{ background: theme.palette.secondary.main }}
       >
@@ -711,25 +697,23 @@ export default function App() {
           sx={{height: 30, width: "100%", mt:-1, mb:-1}}>
           <Box
             component="img"
-            sx={{height: 35, width: 70, mt:-1, mb:-1, ml:-1}}
+            sx={{height: 35, width: 70, mt:-1, mb:-1}}
             src={logo}/>
           <Box
             sx={{width:"100%", display: "flex", justifyContent:"left",
                  fontWeight: 'bold',
                  mt:4, mb:2, ml:1}}>
-
-            <Typography variant="h8" noWrap component="div">
+            <Typography variant="h7" noWrap component="div">
               Joint Scientific Literature Discovery, Summarization and Citation Generation
             </Typography>
-
           </Box>
-
-
-
-
-
         </Toolbar>
       </AppBar>
+
+
+
+
+
 
       <Drawer
         variant="permanent"
@@ -1153,9 +1137,6 @@ export default function App() {
       </Drawer>
 
 
-
-
-
       <Box component="main" 
             sx={{ 
                                   flexGrow: 1, 
@@ -1165,26 +1146,20 @@ export default function App() {
          }}>
         <Toolbar />
 
-        <Box
-          display = { (buffered_paper_info_list!=null)?"flex":"none"  }
-        >
-          <Button
-            size ="large"
-            endIcon = <KeyboardReturnIcon/>
-            onClick = { ()=>{
-                setPaperInfoList( buffered_paper_info_list );
-                set_paper_offset( buffered_paper_offset);
-
-                set_buffered_paper_offset(null);
-                set_buffered_paper_info_list(null);
-
-            } }
-          >
-          Return
-          </Button>
-        </Box>
-
           {  paperInfoList.map( (item, idx)=>{  
+              // if (idx >= paper_offset && 
+              //     idx < paper_offset+ num_papers_per_page && 
+              //     idx < paperInfoList.length){
+              //     return {
+              //         paper_info:item,
+              //         paper_idx:idx,
+              //     };
+              // }else{
+              //     return {
+              //         paper_info:item,
+              //         paper_idx:idx,
+              //     };
+              // }
                   return {
                       paper_info:item,
                       paper_idx:idx,
