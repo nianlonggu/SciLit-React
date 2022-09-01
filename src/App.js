@@ -149,7 +149,7 @@ export default function App() {
     const oldSidebarStatus = sidebarStatus
     setSidebarStatus( 1 - oldSidebarStatus);
     setSidebarDisplay( oldSidebarStatus === 1 ? "none" : null  )
-    setDrawerWidth(  oldSidebarStatus === 1 ? 55 : maxDrawerWidth  )
+    setDrawerWidth(  oldSidebarStatus === 1 ? 65 : maxDrawerWidth  )
   }
 
   useEffect(() => {
@@ -725,9 +725,6 @@ export default function App() {
           </Box>
 
 
-
-
-
         </Toolbar>
       </AppBar>
 
@@ -744,11 +741,14 @@ export default function App() {
         <Box 
             display={"flex"} 
             flexDirection = {'row'}
+            sx={{mt:0,
+                 pr:0,
+                }}
                   >
           <Box  
               display={sidebarDisplay}
               sx={{
-              width: drawerWidth-65,
+              width: drawerWidth-73,
               ml:1,
               mr:-0.5
           }}>
@@ -758,8 +758,8 @@ export default function App() {
                   label = "Context Text"
                   variant="filled"
                   multiline = {true}
-                  maxRows = {(windowSize.innerHeight - 290 ) /2 / 25}
-                  minRows = {(windowSize.innerHeight - 290) /2 / 25}
+                  maxRows = {(windowSize.innerHeight - 310 ) /2 / 25}
+                  minRows = {(windowSize.innerHeight - 310) /2 / 25}
                   sx = {{ "width":"100%", 
                           "mb":2,
                           "mt":2
@@ -869,8 +869,8 @@ export default function App() {
                   label = "Selected Citation Text"
                   variant="filled"
                   multiline = {true}
-                  maxRows = {(windowSize.innerHeight - 290 ) /2 / 25}
-                  minRows = {(windowSize.innerHeight - 290) /2 / 25}
+                  maxRows = {(windowSize.innerHeight - 310 ) /2 / 25}
+                  minRows = {(windowSize.innerHeight - 310) /2 / 25}
                   sx = {{ "width":"100%", "mt":2.2}}
                   InputLabelProps={{ shrink: true }}
 
@@ -1084,8 +1084,7 @@ export default function App() {
             sx={{ 
                     width:20,
                     height:windowSize.innerHeight-100,
-                    mr :0,
-                    ml :1
+                    ml :1.2
                   }}>
 
                 { (()=>{
@@ -1160,6 +1159,7 @@ export default function App() {
             sx={{ 
                                   flexGrow: 1, 
                                   p: 3,
+                                  pl: 2.1,
                                   mt:-1.5,
                                   ml:-2
          }}>
