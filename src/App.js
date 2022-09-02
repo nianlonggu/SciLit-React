@@ -492,6 +492,7 @@ export default function App() {
                     {author_text +". " + venue + ", " + year}
                     <IconButton
                         href={url}
+                        disabled={url===""}
                         target="_blank"
                         rel="noreferrer"
                         sx={{ color:theme.palette.primary.main }}
