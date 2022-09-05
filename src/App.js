@@ -917,6 +917,7 @@ export default function App() {
                               set_export_citation_progress( "" );
                               set_open_export_citation(true);
 
+
                            }
                          }
                      >

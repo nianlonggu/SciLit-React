@@ -446,7 +446,7 @@ export async function highlight_paper(paper_to_highlight, nlp_server_address) {
 export async function export_citation(
     paper_id_info,
     nlp_server_address,
-    timeout = 5000
+    timeout = 10000
 ) {
     const data = {
         paper_list: [paper_id_info],
